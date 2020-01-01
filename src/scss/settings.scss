@@ -1,0 +1,18 @@
+$white : #fff;
+$primary-color: #a2c331;
+$secondary-color: #fa5d07;
+
+$body-bg: #4a4a4a;
+$body-color: $white;
+
+$feed-height: 3rem;
+
+$feed-bg: darken($body-bg, 10%);
+$feed-color: $white;
+$feed-anchor-color: $primary-color;
+
+$feed-header-bg: $secondary-color;
+$feed-header-color: $feed-color;
+
+$feed-button-bg: $primary-color;
+$feed-button-color: $feed-color;
