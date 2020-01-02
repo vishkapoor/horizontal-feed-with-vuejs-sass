@@ -10,6 +10,7 @@
 	}
 }
 
+
 .horizontal-feed {
 	background-color: $feed-bg;
 	line-height: $feed-height;
@@ -40,6 +41,7 @@
 		width: 100%;
 		overflow: hidden;
 		position: relative;
+		
 		p {
 			display: none;
 			margin: 0;
@@ -65,6 +67,7 @@
 			-moz-transaction: all 0.3s;
 			-ms-transition: all 0.3s;
 			-o-transition: all 0.3s;
+
 			&::after {
 				content: '_';
 				display: block;
@@ -94,7 +97,7 @@
 		.next {
 			display: block;
 			cursor: pointer;
-			width: 33.33%;
+			width: 33.333%;
 			height: $feed-height;
 			text-align: center;
 			color: $feed-button-color;
@@ -114,5 +117,39 @@
 			}
 		}
 
+	}
+}
+
+@media all and (min-width: 1024px) {
+	
+	.horizontal-feed {
+		display: flex;
+		align-items: stretch;
+		position: relative;
+
+		.header {
+			display: inline-block;
+		}
+
+		.body {
+			padding-right: 9rem;
+			.cover {
+				width: 10.2rem;
+			}
+		}
+
+		.buttons {
+			display: flex;
+			position: absolute;
+			top: 0;
+			right: 0;
+			z-index: 10;
+
+			.previous,
+			.play,
+			.next {
+				width: 3rem;
+			}
+		}
 	}
 }

@@ -156,7 +156,7 @@ body a {
 .horizontal-feed .buttons .next {
   display: block;
   cursor: pointer;
-  width: 33.33%;
+  width: 33.333%;
   height: 3rem;
   text-align: center;
   color: #fff;
@@ -171,5 +171,42 @@ body a {
 .horizontal-feed .buttons .play:not(.active) {
   opacity: 0.5;
   cursor: default;
+}
+
+@media all and (min-width: 1024px) {
+  .horizontal-feed {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: stretch;
+            align-items: stretch;
+    position: relative;
+  }
+
+  .horizontal-feed .header {
+    display: inline-block;
+  }
+
+  .horizontal-feed .body {
+    padding-right: 9rem;
+  }
+
+  .horizontal-feed .body .cover {
+    width: 10.2rem;
+  }
+
+  .horizontal-feed .buttons {
+    display: -webkit-box;
+    display: flex;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+  }
+
+  .horizontal-feed .buttons .previous,
+  .horizontal-feed .buttons .play,
+  .horizontal-feed .buttons .next {
+    width: 3rem;
+  }
 }
 
