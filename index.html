@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Horizontal Feed with VueJs &amp; Sass</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <link rel="stylesheet" type="text/css" href="./dist/css/app.css">
+    </head>
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+		<div id="app">
+			<div class="row">
+                <feed
+                    :duration="4000"
+                    header="Breaking News"
+                    :collection="'./data.json'"></feed>
+			</div>
+		</div>
+        <script src="./dist/js/app.js" type="text/javascript"></script>		
+    </body>
+</html>
