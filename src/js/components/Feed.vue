@@ -5,23 +5,33 @@
 		<span>{{ header }}</span>
 	</div>
 
-	<div class="body">
+	<div class="body" 
+		:class="swappingClass" 
+		@mouseout="resume()" 
+		@mouseover="pause()">
 		<div>
-			<p>
-				<a href="#">Titile <span>Content</span></a>
+			<p v-for="(feed, index) in feeds" :class="activeClass(index)">
+				<a :href="feed.href"> {{ feed.title }} <span>{{ feed.body }}</span></a>
 			</p>
 		</div>
 		<div class="cover"></div>
 	</div>
 
 	<div class="buttons">
-		<span class="previous">
+		<span 
+			@click="goPrevious()"
+			class="previous">
 			<i class="fa fa-angle-left"></i>
 		</span>
-		<span class="play">
+		<span 
+			@click="play()"
+			:class="playClass"
+			class="play">
 			<i class="fa fa-play"></i>
 		</span>
-		<span class="next">
+		<span 
+			@click="goNext()"
+			class="next">
 			<i class="fa fa-angle-right"></i>
 		</span>
 	</div>
@@ -50,6 +60,10 @@ export default {
 			feeds: [],
 			max: 0,
 			hasFeeds: false,
+			currentIndex: 0,
+			interval: null,
+			paused: false,
+			swapping: false,
 		}
 	},
 	mounted() {
@@ -70,9 +84,68 @@ export default {
 			}
 			 this.max = this.feeds.length - 1;
 			 this.hasFeeds = true;
+			 this.swap();
+		},
+		activeClass(index) {
+			return {
+				'active': index === this.currentIndex
+			}
 		},
 		swap() {
-
+			this.interval = window.setInterval(() => {
+				if(!this.paused) {
+					this.nextSlide();
+				}
+			}, this.duration);	
+		},
+		previousSlide() {
+			this.progress('previous');
+		},
+		nextSlide() {
+			this.progress('next');
+		},
+		progress(direction) {
+			this.swapping = true;
+			window.setTimeout(() => {
+				this.currentIndex = this[direction]();
+				this.swapping = false;
+			}, 1000);
+		},
+		next() {
+			if(this.currentIndex === this.max) {
+				return 0;
+			}
+			return this.currentIndex + 1;
+		},
+		previous() {
+			if(this.currentIndex === 0) {
+				return this.max;
+			}
+			return this.currentIndex - 1;
+		},
+		pause() {
+			this.paused = true;
+		},
+		resume() {
+			this.paused = false;
+		},
+		goPrevious() {
+			this.stop();
+			this.previousSlide();
+		},
+		goNext() {
+			this.stop();
+			this.nextSlide();
+		},
+		stop() {
+			window.clearInterval(this.interval);
+			this.interval = null;
+		},
+		play() {
+			if(this.interval) {
+				return;
+			}
+			this.swap();
 		},
 		getFeeds() {
 			if(_.isEmpty(this.collection)) {
@@ -86,6 +159,21 @@ export default {
 				.catch(e => {
 					throw new Error(e);
 				})
+		}
+	},
+	computed: {
+		feedsLength() {
+			return this.feeds.length;
+		},
+		swappingClass() {
+			return {
+				swapping: this.swapping
+			}
+		},
+		playClass() {
+			return {
+				'active': !this.interval
+			}
 		}
 	}
 };

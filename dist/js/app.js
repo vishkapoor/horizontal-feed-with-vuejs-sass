@@ -1889,6 +1889,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Feed',
   props: {
@@ -1910,7 +1920,11 @@ __webpack_require__.r(__webpack_exports__);
     return {
       feeds: [],
       max: 0,
-      hasFeeds: false
+      hasFeeds: false,
+      currentIndex: 0,
+      interval: null,
+      paused: false,
+      swapping: false
     };
   },
   mounted: function mounted() {
@@ -1932,22 +1946,105 @@ __webpack_require__.r(__webpack_exports__);
 
       this.max = this.feeds.length - 1;
       this.hasFeeds = true;
+      this.swap();
     },
-    swap: function swap() {},
-    getFeeds: function getFeeds() {
+    activeClass: function activeClass(index) {
+      return {
+        'active': index === this.currentIndex
+      };
+    },
+    swap: function swap() {
       var _this = this;
+
+      this.interval = window.setInterval(function () {
+        if (!_this.paused) {
+          _this.nextSlide();
+        }
+      }, this.duration);
+    },
+    previousSlide: function previousSlide() {
+      this.progress('previous');
+    },
+    nextSlide: function nextSlide() {
+      this.progress('next');
+    },
+    progress: function progress(direction) {
+      var _this2 = this;
+
+      this.swapping = true;
+      window.setTimeout(function () {
+        _this2.currentIndex = _this2[direction]();
+        _this2.swapping = false;
+      }, 1000);
+    },
+    next: function next() {
+      if (this.currentIndex === this.max) {
+        return 0;
+      }
+
+      return this.currentIndex + 1;
+    },
+    previous: function previous() {
+      if (this.currentIndex === 0) {
+        return this.max;
+      }
+
+      return this.currentIndex - 1;
+    },
+    pause: function pause() {
+      this.paused = true;
+    },
+    resume: function resume() {
+      this.paused = false;
+    },
+    goPrevious: function goPrevious() {
+      this.stop();
+      this.previousSlide();
+    },
+    goNext: function goNext() {
+      this.stop();
+      this.nextSlide();
+    },
+    stop: function stop() {
+      window.clearInterval(this.interval);
+      this.interval = null;
+    },
+    play: function play() {
+      if (this.interval) {
+        return;
+      }
+
+      this.swap();
+    },
+    getFeeds: function getFeeds() {
+      var _this3 = this;
 
       if (_.isEmpty(this.collection)) {
         throw new Error('Invalid endpoint');
       }
 
       window.axios.get(this.collection).then(function (response) {
-        _this.feeds = response.data;
+        _this3.feeds = response.data;
 
-        _this.initialize();
+        _this3.initialize();
       })["catch"](function (e) {
         throw new Error(e);
       });
+    }
+  },
+  computed: {
+    feedsLength: function feedsLength() {
+      return this.feeds.length;
+    },
+    swappingClass: function swappingClass() {
+      return {
+        swapping: this.swapping
+      };
+    },
+    playClass: function playClass() {
+      return {
+        'active': !this.interval
+      };
     }
   }
 });
@@ -30607,49 +30704,83 @@ var render = function() {
           _c("span", [_vm._v(_vm._s(_vm.header))])
         ]),
         _vm._v(" "),
-        _vm._m(0),
+        _c(
+          "div",
+          {
+            staticClass: "body",
+            class: _vm.swappingClass,
+            on: {
+              mouseout: function($event) {
+                return _vm.resume()
+              },
+              mouseover: function($event) {
+                return _vm.pause()
+              }
+            }
+          },
+          [
+            _c(
+              "div",
+              _vm._l(_vm.feeds, function(feed, index) {
+                return _c("p", { class: _vm.activeClass(index) }, [
+                  _c("a", { attrs: { href: feed.href } }, [
+                    _vm._v(" " + _vm._s(feed.title) + " "),
+                    _c("span", [_vm._v(_vm._s(feed.body))])
+                  ])
+                ])
+              }),
+              0
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "cover" })
+          ]
+        ),
         _vm._v(" "),
-        _vm._m(1)
+        _c("div", { staticClass: "buttons" }, [
+          _c(
+            "span",
+            {
+              staticClass: "previous",
+              on: {
+                click: function($event) {
+                  return _vm.goPrevious()
+                }
+              }
+            },
+            [_c("i", { staticClass: "fa fa-angle-left" })]
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "play",
+              class: _vm.playClass,
+              on: {
+                click: function($event) {
+                  return _vm.play()
+                }
+              }
+            },
+            [_c("i", { staticClass: "fa fa-play" })]
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "next",
+              on: {
+                click: function($event) {
+                  return _vm.goNext()
+                }
+              }
+            },
+            [_c("i", { staticClass: "fa fa-angle-right" })]
+          )
+        ])
       ])
     : _vm._e()
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "body" }, [
-      _c("div", [
-        _c("p", [
-          _c("a", { attrs: { href: "#" } }, [
-            _vm._v("Titile "),
-            _c("span", [_vm._v("Content")])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "cover" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "buttons" }, [
-      _c("span", { staticClass: "previous" }, [
-        _c("i", { staticClass: "fa fa-angle-left" })
-      ]),
-      _vm._v(" "),
-      _c("span", { staticClass: "play" }, [
-        _c("i", { staticClass: "fa fa-play" })
-      ]),
-      _vm._v(" "),
-      _c("span", { staticClass: "next" }, [
-        _c("i", { staticClass: "fa fa-angle-right" })
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
